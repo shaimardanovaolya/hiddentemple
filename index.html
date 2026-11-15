@@ -3,54 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>2D-прототип</title>
+  <title>Сканер дрона</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="arena" aria-label="2D-прототип">
-    <div id="game" aria-label="Игровая область"></div>
-    <div class="hud">
-      <div class="counter"><span>Нажатия</span><strong id="counter">0</strong></div>
-      <div class="hud-actions">
-        <button id="reset" type="button" aria-label="Начать заново" title="Начать заново">↻</button>
-        <button id="open-settings" type="button" aria-label="Настройки" title="Настройки" aria-haspopup="dialog" aria-controls="settings-dialog">⚙</button>
+  <main class="arena" aria-label="Сканер дрона">
+    <div id="game" aria-hidden="true"></div>
+    <header class="hud">
+      <div class="brand"><strong>Сканер дрона</strong></div>
+      <div class="meters" aria-label="Энергия сканера">
+        <div><strong id="charge">00</strong><span id="charge-limit"></span><small>Заряды</small></div>
+        <div><strong id="shots">00</strong><span id="shot-limit"></span><small>Попытки</small></div>
       </div>
-    </div>
-    <dialog id="settings-dialog" aria-labelledby="settings-title" aria-describedby="settings-hint">
-      <div class="settings-header">
-        <h2 id="settings-title">Настройки</h2>
-        <button id="close-settings" type="button" aria-label="Закрыть настройки" autofocus>×</button>
+      <div class="tools">
+        <button id="reset" type="button" title="Начать заново" aria-label="Начать заново">↻</button>
+        <button id="settings" type="button" title="Настройки" aria-label="Настройки">⚙</button>
       </div>
-      <p id="settings-hint">Игра на паузе. Изменения применяются сразу.</p>
-      <div class="parameters">
-        <div class="parameter">
-          <label for="object-count">Число фигур <output id="object-count-value" for="object-count">4</output></label>
-          <input id="object-count" type="range" min="1" max="12" step="1" value="4">
-        </div>
-        <div class="parameter">
-          <label for="object-radius">Размер фигур <output id="object-radius-value" for="object-radius">40</output></label>
-          <input id="object-radius" type="range" min="16" max="64" step="2" value="40">
-        </div>
-        <div class="parameter">
-          <label for="pulse-duration">Анимация <output id="pulse-duration-value" for="pulse-duration">140 мс</output></label>
-          <input id="pulse-duration" type="range" min="80" max="600" step="20" value="140">
-        </div>
-      </div>
-      <div class="settings-actions">
-        <button id="reset-parameters" type="button">Сброс параметров</button>
-        <button id="settings-done" class="primary" type="button">Готово</button>
-      </div>
-      <p id="settings-note" role="status">Параметры сохраняются в браузере</p>
+    </header>
+    <section id="screen" class="screen" aria-label="Игровая сцена"></section>
+    <p id="announcement" class="sr-only" aria-live="polite"></p>
+    <dialog id="modal" aria-labelledby="modal-title">
+      <div class="modal-header"><h2 id="modal-title"></h2><button id="close" type="button" aria-label="Закрыть" autofocus>×</button></div>
+      <div id="modal-body"></div>
     </dialog>
-    <p id="error" role="alert" hidden></p>
-    <noscript>Для запуска игры включите JavaScript в браузере.</noscript>
+    <p id="error" role="alert" hidden>Игра не запустилась. Обновите страницу в браузере.</p>
+    <noscript>Для игры включите JavaScript в браузере.</noscript>
   </main>
   <script>
-    window.showGameError = function () {
-      const error = document.getElementById('error');
-      error.hidden = false;
-      error.textContent = 'Не удалось запустить игру или произошла ошибка. Обновите страницу. Если ошибка повторится, попросите Codex проверить проект.';
-    };
+    window.showGameError = () => { document.getElementById('error').hidden = false; };
     window.addEventListener('error', window.showGameError);
     window.addEventListener('unhandledrejection', window.showGameError);
   </script>
