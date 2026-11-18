@@ -6,7 +6,15 @@
   const storageKey = 'nara-deer:parameters:v1';
   const dialog = $('settings-dialog');
   const bow = $('bow');
-  const goal = 3;
+  const openingBows = 3;
+  const finalWaits = [[550, 700], [1500, 1800], [850, 1100]];
+  const goal = openingBows + finalWaits.length;
+  const steps = Array.from({ length: goal }, (_, i) => {
+    const step = document.createElement('i');
+    if (i === openingBows) step.classList.add('final-start');
+    return step;
+  });
+  $('steps').append(...steps);
   const controls = ['approach', 'window'].map(id => ({ id, input: $(id), output: $(`${id}-value`) }));
   let stored;
   let storageAvailable = true;
@@ -34,7 +42,7 @@
 
   function score() {
     $('score').textContent = `${hits} / ${goal}`;
-    document.querySelectorAll('.steps i').forEach((step, i) => step.classList.toggle('filled', i < hits));
+    steps.forEach((step, i) => step.classList.toggle('filled', i < hits));
   }
 
   function pose(value, celebrate = false) {
@@ -60,8 +68,10 @@
   function nextAttempt() {
     phase = 'waiting';
     elapsed = 0;
-    waitingTime = 800 + Math.random() * 700;
-    timing = settings;
+    const inFinal = hits >= openingBows;
+    const [minWait, maxWait] = inFinal ? finalWaits[hits - openingBows] : [800, 1500];
+    waitingTime = minWait + Math.random() * (maxWait - minWait);
+    timing = inFinal ? { ...settings, approach: Math.round(settings.approach * .72) } : settings;
     pose('idle');
     bow.textContent = 'Поклониться';
   }
