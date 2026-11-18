@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Вежливые олени Нары</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="arena" aria-labelledby="title">
+    <header class="hud">
+      <div class="hud-title">
+        <span class="location">Парк Нары</span>
+        <h1 id="title">Поклон оленю</h1>
+      </div>
+      <div class="progress">
+        <span id="score" aria-label="Успешные поклоны">0 / 3</span>
+        <div class="steps" aria-hidden="true"><i></i><i></i><i></i></div>
+      </div>
+      <div class="tools">
+        <button id="restart" type="button" title="Начать заново" aria-label="Начать заново">↻</button>
+        <button id="settings" type="button" title="Настройки" aria-label="Настройки" aria-haspopup="dialog">⚙</button>
+      </div>
+    </header>
+    <div class="playfield">
+      <div class="clearing" aria-hidden="true">
+        <div class="shadow"></div>
+        <div class="deer" id="deer"></div>
+        <div class="reward" id="reward"><span>♥</span><span class="cracker"></span><span>♥</span></div>
+      </div>
+      <section class="controls" aria-label="Поклон">
+        <div class="dial" id="dial" aria-hidden="true"><div id="game"></div><span class="dial-center"></span></div>
+        <p class="instruction">Нажми, когда круг попадёт в зелёную зону.</p>
+        <button class="bow" id="bow" type="button">Начать</button>
+        <p class="feedback" id="feedback" role="status" aria-atomic="true"></p>
+      </section>
+    </div>
+    <dialog id="settings-dialog" aria-labelledby="settings-title">
+      <div class="modal-head"><h2 id="settings-title">Настройки</h2><button id="close-settings" type="button" aria-label="Закрыть" autofocus>×</button></div>
+      <div class="preferences">
+        <label for="approach">Время сужения круга <output id="approach-value" for="approach"></output></label>
+        <input id="approach" type="range" min="1000" max="2600" step="100" value="1800">
+        <label for="window">Окно попадания <output id="window-value" for="window"></output></label>
+        <input id="window" type="range" min="240" max="800" step="40" value="480">
+      </div>
+      <div class="modal-actions"><button id="defaults" type="button">Сбросить параметры</button><button id="done" class="bow" type="button">Готово</button></div>
+      <p id="settings-note" role="status"></p>
+    </dialog>
+    <p id="error" class="error" role="alert" hidden>Игра не запустилась. Попробуй обновить страницу.</p>
+    <noscript>Для игры включи JavaScript в браузере.</noscript>
+  </main>
+  <script>
+    window.showGameError = () => { document.getElementById('error').hidden = false; };
+    window.addEventListener('error', window.showGameError);
+    window.addEventListener('unhandledrejection', window.showGameError);
+  </script>
+  <script src="../lib/phaser.min.js" onerror="showGameError()"></script>
+  <script src="game.js" onerror="showGameError()"></script>
+</body>
+</html>

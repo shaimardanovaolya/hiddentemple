@@ -24,7 +24,8 @@ def main():
             port = server.server_port
             write_port_file(port_file, port)
             try:
-                address = f'http://127.0.0.1:{port}/'
+                route = 'deer/' if '--deer' in sys.argv else ''
+                address = f'http://127.0.0.1:{port}/{route}'
                 print(f'Игра запущена: {address}', flush=True)
                 print('Оставьте это окно открытым во время игры. Чтобы остановить сервер, закройте окно.', flush=True)
                 if '--no-browser' not in sys.argv:
