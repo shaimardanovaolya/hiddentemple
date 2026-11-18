@@ -7,8 +7,8 @@
   const dialog = $('settings-dialog');
   const bow = $('bow');
   const openingBows = 3;
-  const finalWaits = [[1000, 1250], [1750, 2000], [2350, 2650]];
-  const goal = openingBows + finalWaits.length;
+  const bowWaits = [[800, 1500], [800, 1500], [1600, 1850], [1000, 1250], [1750, 2000], [2350, 2650]];
+  const goal = bowWaits.length;
   const steps = Array.from({ length: goal }, (_, i) => {
     const step = document.createElement('i');
     if (i === openingBows) step.classList.add('final-start');
@@ -69,7 +69,7 @@
     phase = 'waiting';
     elapsed = 0;
     const inFinal = hits >= openingBows;
-    const [minWait, maxWait] = inFinal ? finalWaits[hits - openingBows] : [800, 1500];
+    const [minWait, maxWait] = bowWaits[hits];
     waitingTime = minWait + Math.random() * (maxWait - minWait);
     timing = inFinal ? { ...settings, approach: Math.round(settings.approach * .45) } : settings;
     pose('idle');
