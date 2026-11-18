@@ -7,7 +7,7 @@
   const dialog = $('settings-dialog');
   const bow = $('bow');
   const openingBows = 3;
-  const finalWaits = [[550, 700], [1500, 1800], [850, 1100]];
+  const finalWaits = [[550, 700], [1300, 1550], [1850, 2150]];
   const goal = openingBows + finalWaits.length;
   const steps = Array.from({ length: goal }, (_, i) => {
     const step = document.createElement('i');
@@ -71,7 +71,7 @@
     const inFinal = hits >= openingBows;
     const [minWait, maxWait] = inFinal ? finalWaits[hits - openingBows] : [800, 1500];
     waitingTime = minWait + Math.random() * (maxWait - minWait);
-    timing = inFinal ? { ...settings, approach: Math.round(settings.approach * .72) } : settings;
+    timing = inFinal ? { ...settings, approach: Math.round(settings.approach * .56) } : settings;
     pose('idle');
     bow.textContent = 'Поклониться';
   }
