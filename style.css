@@ -101,7 +101,7 @@ p { line-height: 1.38; color: var(--muted); }
 .search { container-type: size; width: 100%; height: 100%; display: grid; place-items: center; min-width: 0; min-height: 0; }
 .board-frame { width: min(100cqw, 100cqh, 570px); aspect-ratio: 1; padding: clamp(9px, 1.8vw, 23px); background: linear-gradient(135deg, #e3eddd, #b5c8b7 48%, #dae5ce); border: 2px solid #dbe4cf; border-radius: clamp(13px, 2vw, 25px); box-shadow: inset 0 4px 1px #f7f7db, inset -3px -3px 0 #92ab9a, 0 6px 0 #869d88, 0 10px 0 #556f59, 0 18px 22px #4b4e2c69; }
 .board { position: relative; isolation: isolate; width: 100%; height: 100%; display: grid; grid-template: repeat(4, minmax(0, 1fr)) / repeat(4, minmax(0, 1fr)); gap: 0; border-radius: clamp(6px, 1vw, 10px); background: radial-gradient(ellipse at 30% 20%, #b2ad78, #8f9b72 65%, #798765); box-shadow: inset 0 3px 10px #354a3e8c; overflow: hidden; }
-.art-layer { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.art-layer { position: absolute; inset: 0; pointer-events: none; z-index: 0; mask-size: 25% 25%; mask-repeat: no-repeat; }
 .artifact { position: absolute; padding: 2px; }
 .artifact img { width: 100%; height: 100%; object-fit: fill; filter: drop-shadow(0 4px 2px #33483255); }
 .tile { z-index: 1; position: relative; min-width: 0; min-height: 0; padding: 0; margin: 0; border-radius: clamp(4px, 1vw, 10px); border: 0; box-shadow: none; font-size: clamp(1rem, 5vw, 3rem); }

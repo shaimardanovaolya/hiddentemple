@@ -247,6 +247,13 @@
     }).join('');
   }
 
+  function artworkMask() {
+    const visible = state.opened.filter(cell => state.board[cell] >= 0);
+    const images = visible.map(() => 'linear-gradient(#000, #000)').join(',') || 'linear-gradient(transparent, transparent)';
+    const positions = visible.map(cell => `${cell % 4 * 100 / 3}% ${Math.floor(cell / 4) * 100 / 3}%`).join(',') || '0 0';
+    return `mask-image:${images};mask-position:${positions}`;
+  }
+
   function field() {
     const counts = fragments(state);
     const shapes = footprints(state.board);
@@ -276,7 +283,7 @@
           <span class="item-name">${item.name}${itemShape(shapes[i])}</span>
           <span class="item-status"><span class="sr-only">${isFound ? 'Найден' : 'В поиске'}</span><span aria-hidden="true">${isFound ? '✓' : '–'}</span></span></li>`;
       }).join('')}</ul></aside>
-      <div class="search"><div class="board-frame"><div class="board" aria-label="Поле 4 на 4"><div class="art-layer" aria-hidden="true">${fieldArtwork(shapes)}</div>${state.board.map((item, i) => {
+      <div class="search"><div class="board-frame"><div class="board" aria-label="Поле 4 на 4"><div class="art-layer" aria-hidden="true" style="${artworkMask()}">${fieldArtwork(shapes)}</div>${state.board.map((item, i) => {
         const opened = state.opened.includes(i);
         const hint = !opened && state.hint === i;
         const title = `Ряд ${Math.floor(i / 4) + 1}, столбец ${i % 4 + 1}`;
