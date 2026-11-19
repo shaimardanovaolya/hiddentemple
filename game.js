@@ -250,15 +250,8 @@
       const angle = itemRotation(i, shapes[i]);
       const image = angle % 180 === 90 && i !== 3 ? `${item.image}-vertical` : item.image;
       const rotation = i === 3 ? angle : 0;
-      const missing = [0, 1, 2, 3].find(cell => !shapes[i].occupied.includes(cell));
-      const corners = [
-        '50% 0,100% 0,100% 100%,0 100%,0 50%,50% 50%',
-        '0 0,50% 0,50% 50%,100% 50%,100% 100%,0 100%',
-        '0 0,100% 0,100% 100%,50% 100%,50% 50%,0 50%',
-        '0 0,100% 0,100% 50%,50% 50%,50% 100%,0 100%'
-      ];
-      const clip = i === 3 ? `polygon(${corners[missing]})` : 'inset(0)';
-      return `<span class="artifact" style="left:${left * 25}%;top:${top * 25}%;width:${columns * 25}%;height:${rows * 25}%;clip-path:${clip}"><img alt="" src="assets/scanner/${image}.png" style="transform:rotate(${rotation}deg)" draggable="false"></span>`;
+      const inset = i === 3 ? ' translate(-4%, 4%) scale(.86)' : '';
+      return `<span class="artifact" style="left:${left * 25}%;top:${top * 25}%;width:${columns * 25}%;height:${rows * 25}%;clip-path:inset(0)"><img alt="" src="assets/scanner/${image}.png" style="transform:rotate(${rotation}deg)${inset}" draggable="false"></span>`;
     }).join('');
   }
 
