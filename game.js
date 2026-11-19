@@ -164,7 +164,7 @@
   }
 
   function fresh() {
-    return { board: makeBoard(), opened: [], hint: null, limit: nextLimit };
+    return { board: makeBoard(), opened: [], hint: null, limit: nextLimit, rulesVersion: 2 };
   }
 
   function indices(values, limit) {
@@ -212,7 +212,13 @@
   if (settings?.balance !== 2) save(settingsKey, { pulse, limit: nextLimit, balance: 2 });
   const saved = read(progressKey);
   let state = valid(saved) ? saved : fresh();
-  if (state !== saved) saveProgress();
+  if (state.rulesVersion !== 2) {
+    if (state.limit === 14 && nextLimit === defaultLimit && state.opened.length <= defaultLimit) {
+      state.limit = defaultLimit;
+    }
+    state.rulesVersion = 2;
+    saveProgress();
+  } else if (state !== saved) saveProgress();
   function button(label, action, primary = false) {
     return `<button type="button" data-action="${action}"${primary ? ' class="primary"' : ''}>${label}</button>`;
   }
