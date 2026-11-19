@@ -8,10 +8,10 @@
   const settingsKey = 'drone-scanner:parameters:v1';
 
   const items = [
-    { name: 'Свиток', icon: '📜', size: 3 },
-    { name: 'Печать', icon: '🔶', size: 4 },
-    { name: 'Чип', icon: '▣', size: 2 },
-    { name: 'Батарейка', icon: '🔋', size: 3 }
+    { name: 'Свиток', image: 'scroll', size: 3 },
+    { name: 'Печать', image: 'seal', size: 4 },
+    { name: 'Чип', image: 'chip', size: 2 },
+    { name: 'Батарейка', image: 'battery', size: 3 }
   ];
   const minLimit = items.reduce((sum, item) => sum + item.size, 0);
   const screen = $('screen');
@@ -225,6 +225,28 @@
     return `<span class="item-shape" role="img" aria-label="${description.join('; ')}" style="--columns: ${columns}">${squares}</span>`;
   }
 
+  function itemRotation(item, shape) {
+    if (item === 3) {
+      const missing = [0, 1, 2, 3].find(i => !shape.occupied.includes(i));
+      return [270, 0, 180, 90][missing];
+    }
+    return item !== 1 && shape.columns === 1 ? 90 : 0;
+  }
+
+  function fieldArtwork(shapes) {
+    return items.map((item, i) => {
+      const positions = state.board.flatMap((value, cell) => value === i ? [cell] : []);
+      const left = Math.min(...positions.map(cell => cell % 4));
+      const top = Math.floor(positions[0] / 4);
+      const columns = shapes[i].columns;
+      const rows = Math.floor(shapes[i].occupied.at(-1) / columns) + 1;
+      const angle = itemRotation(i, shapes[i]);
+      const image = angle % 180 === 90 && i !== 3 ? `${item.image}-vertical` : item.image;
+      const rotation = i === 3 ? angle : 0;
+      return `<span class="artifact" style="left:${left * 25}%;top:${top * 25}%;width:${columns * 25}%;height:${rows * 25}%"><img alt="" src="assets/scanner/${image}.png" style="transform:rotate(${rotation}deg)" draggable="false"></span>`;
+    }).join('');
+  }
+
   function field() {
     const counts = fragments(state);
     const shapes = footprints(state.board);
@@ -244,21 +266,23 @@
     }
 
     return `<div class="scanner">
-      <aside class="collection"><div class="collection-head"><h1 tabindex="-1">Витрина</h1><strong aria-label="Найдено ${found} из 4">${found}/4</strong></div>
+      <aside class="collection"><div class="collection-head"><h1 tabindex="-1">Находки</h1><strong aria-label="Найдено ${found} из 4">${found}/4</strong></div>
       <ul>${items.map((item, i) => {
         const isFound = counts[i] === item.size;
+        const angle = itemRotation(i, shapes[i]);
+        const image = angle % 180 === 90 && i !== 3 ? `${item.image}-vertical` : item.image;
         return `<li class="item-${i}${isFound ? ' found' : ''}">
-          <span class="item-icon" aria-hidden="true">${item.icon}</span>
+          <span class="item-icon" aria-hidden="true"><img src="assets/scanner/${image}.png" alt="" draggable="false" style="transform:rotate(${i === 3 ? angle : 0}deg)"></span>
           <span class="item-name">${item.name}${itemShape(shapes[i])}</span>
           <span class="item-status"><span class="sr-only">${isFound ? 'Найден' : 'В поиске'}</span><span aria-hidden="true">${isFound ? '✓' : '–'}</span></span></li>`;
       }).join('')}</ul></aside>
-      <div class="search"><div class="board" aria-label="Поле 4 на 4">${state.board.map((item, i) => {
+      <div class="search"><div class="board-frame"><div class="board" aria-label="Поле 4 на 4"><div class="art-layer" aria-hidden="true">${fieldArtwork(shapes)}</div>${state.board.map((item, i) => {
         const opened = state.opened.includes(i);
         const hint = !opened && state.hint === i;
         const title = `Ряд ${Math.floor(i / 4) + 1}, столбец ${i % 4 + 1}`;
         const detail = opened ? (item < 0 ? ', пусто' : `, ${items[item].name}`) : (hint ? ', подсказка' : '');
-        return `<button type="button" class="tile ${opened ? (item < 0 ? 'empty' : `item-${item} fragment`) : 'covered'}${hint ? ' hint' : ''}" data-action="scan-${i}" aria-label="${title}${detail}"${opened || won || exhausted ? ' disabled' : ''}>${opened ? (item < 0 ? '·' : items[item].icon) : (hint ? '✧' : '')}</button>`;
-      }).join('')}</div></div>
+        return `<button type="button" class="tile ${opened ? (item < 0 ? 'empty' : `item-${item} fragment`) : 'covered'}${hint ? ' hint' : ''}" data-action="scan-${i}" aria-label="${title}${detail}"${opened || won || exhausted ? ' disabled' : ''}>${hint ? '✧' : ''}</button>`;
+      }).join('')}</div></div></div>
       <div class="field-controls">${controls}</div>
     </div>`;
   }
@@ -398,19 +422,6 @@
   class TempleScene extends Phaser.Scene {
     create() {
       scene = this;
-      const floor = this.add.graphics();
-      const draw = ({ width, height }) => {
-        floor.clear();
-        floor.lineStyle(1, 0x59cdbd, 0.085);
-        for (let x = width / 2 % 32; x < width; x += 32) floor.lineBetween(x, 0, x, height);
-        for (let y = height / 2 % 32; y < height; y += 32) floor.lineBetween(0, y, width, y);
-        floor.lineStyle(1, 0x59cdbd, 0.15);
-        for (let radius = 75; radius < Math.max(width, height); radius += 90) {
-          floor.strokeCircle(width * 0.72, height * 0.53, radius);
-        }
-      };
-      draw(this.scale.gameSize);
-      this.scale.on('resize', draw);
       if (modal.open) this.scene.pause();
     }
   }

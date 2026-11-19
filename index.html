@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Сканер дрона</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=shrine-1">
 </head>
 <body>
   <main class="arena" aria-label="Сканер дрона">
     <div id="game" aria-hidden="true"></div>
     <header class="hud">
-      <div class="brand"><strong>Сканер дрона</strong></div>
+      <div class="brand"><small>Ворота Тории</small><strong>Сканер дрона</strong></div>
       <div class="meters" aria-label="Энергия сканера">
         <div><strong id="charge">00</strong><span id="charge-limit"></span><small>Заряды</small></div>
         <div><strong id="shots">00</strong><span id="shot-limit"></span><small>Попытки</small></div>
@@ -35,6 +35,6 @@
     window.addEventListener('unhandledrejection', window.showGameError);
   </script>
   <script src="lib/phaser.min.js" onerror="showGameError()"></script>
-  <script src="game.js" onerror="showGameError()"></script>
+  <script src="game.js?v=shrine-1" onerror="showGameError()"></script>
 </body>
 </html>
