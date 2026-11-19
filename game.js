@@ -2,7 +2,7 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const cost = 3;
-  const defaultLimit = 13;
+  const defaultLimit = 12;
   const maxLimit = 16;
   const progressKey = 'drone-scanner:progress:v5';
   const settingsKey = 'drone-scanner:parameters:v1';
@@ -164,7 +164,7 @@
   }
 
   function fresh() {
-    return { board: makeBoard(), opened: [], hint: null, limit: nextLimit, rulesVersion: 2 };
+    return { board: makeBoard(), opened: [], hint: null, limit: nextLimit, rulesVersion: 3 };
   }
 
   function indices(values, limit) {
@@ -208,15 +208,15 @@
 
   const settings = read(settingsKey);
   let pulse = normalizePulse(settings?.pulse);
-  let nextLimit = settings?.balance === 2 ? normalizeLimit(settings.limit) : defaultLimit;
-  if (settings?.balance !== 2) save(settingsKey, { pulse, limit: nextLimit, balance: 2 });
+  let nextLimit = settings?.balance === 3 ? normalizeLimit(settings.limit) : defaultLimit;
+  if (settings?.balance !== 3) save(settingsKey, { pulse, limit: nextLimit, balance: 3 });
   const saved = read(progressKey);
   let state = valid(saved) ? saved : fresh();
-  if (state.rulesVersion !== 2) {
-    if (state.limit === 14 && nextLimit === defaultLimit && state.opened.length <= defaultLimit) {
+  if (state.rulesVersion !== 3) {
+    if ([13, 14].includes(state.limit) && nextLimit === defaultLimit && state.opened.length <= defaultLimit) {
       state.limit = defaultLimit;
     }
-    state.rulesVersion = 2;
+    state.rulesVersion = 3;
     saveProgress();
   } else if (state !== saved) saveProgress();
   function button(label, action, primary = false) {
@@ -360,7 +360,7 @@
   function applySettings(pulseValue, limitValue) {
     pulse = normalizePulse(pulseValue);
     nextLimit = normalizeLimit(limitValue);
-    save(settingsKey, { pulse, limit: nextLimit, balance: 2 });
+    save(settingsKey, { pulse, limit: nextLimit, balance: 3 });
     $('pulse').value = pulse;
     $('pulse-value').textContent = `${pulse} мс`;
     $('limit').value = nextLimit;
