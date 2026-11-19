@@ -2,7 +2,7 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const cost = 3;
-  const defaultLimit = 14;
+  const defaultLimit = 13;
   const maxLimit = 16;
   const progressKey = 'drone-scanner:progress:v5';
   const settingsKey = 'drone-scanner:parameters:v1';
@@ -208,7 +208,8 @@
 
   const settings = read(settingsKey);
   let pulse = normalizePulse(settings?.pulse);
-  let nextLimit = normalizeLimit(settings?.limit);
+  let nextLimit = settings?.balance === 2 ? normalizeLimit(settings.limit) : defaultLimit;
+  if (settings?.balance !== 2) save(settingsKey, { pulse, limit: nextLimit, balance: 2 });
   const saved = read(progressKey);
   let state = valid(saved) ? saved : fresh();
   if (state !== saved) saveProgress();
@@ -353,7 +354,7 @@
   function applySettings(pulseValue, limitValue) {
     pulse = normalizePulse(pulseValue);
     nextLimit = normalizeLimit(limitValue);
-    save(settingsKey, { pulse, limit: nextLimit });
+    save(settingsKey, { pulse, limit: nextLimit, balance: 2 });
     $('pulse').value = pulse;
     $('pulse-value').textContent = `${pulse} мс`;
     $('limit').value = nextLimit;
